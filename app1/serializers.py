@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AccUsers, Misel, AccLedgers, AccMaster, AccInvmast, CashAndBankAccMaster, AccTtServicemaster
+from .models import AccUsers, Misel, AccLedgers, AccMaster, AccInvmast, CashAndBankAccMaster, AccTtServicemaster,SalesReturnReport
 
 
 class AccUsersSerializer(serializers.ModelSerializer):
@@ -60,3 +60,10 @@ class AccTtServicemasterSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccTtServicemaster
         fields = ['slno', 'type', 'code', 'name', 'client_id']
+
+
+
+class SalesReturnReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesReturnReport
+        fields = ['date', 'invno', 'net', 'customername', 'userid', 'client_id']

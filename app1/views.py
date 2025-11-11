@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import AccUsers, Misel, AccMaster, AccLedgers, AccInvmast, CashAndBankAccMaster, AccTtServicemaster, SalesDaywise, SalesMonthwise,SalesToday, PurchaseToday
+from .models import SalesReturnReport
 import traceback
 import logging
 
@@ -680,3 +681,61 @@ class GetSalesMonthwiseAPI(APIView):
         } for s in sales_monthwise]
 
         return Response({"count": len(data), "sales_monthwise": data}, status=200)
+    
+
+
+
+
+
+class UploadSalesReturnReportAPI(APIView):
+    def post(self, request):
+        data = request.data
+        client_id = request.query_params.get('client_id')
+
+        if not client_id:
+            return Response({"error": "Missing client_id in query parameters."}, status=400)
+
+        if not isinstance(data, list):
+            return Response({"error": "Expected a list of salesreturn_report items."}, status=400)
+
+        try:
+            # Clear existing data
+            SalesReturnReport.objects.filter(client_id=client_id).delete()
+
+            # Insert new records
+            for item in data:
+                SalesReturnReport.objects.create(
+                    date=item.get('date'),
+                    invno=item.get('invno'),
+                    net=item.get('net'),
+                    customername=item.get('customername'),
+                    userid=item.get('userid'),
+                    client_id=client_id
+                )
+
+            return Response({
+                "message": f"{len(data)} salesreturn_report records uploaded for client_id {client_id}."
+            }, status=201)
+
+        except Exception as e:
+            logger.error(f"Error in UploadSalesReturnReportAPI: {str(e)}\n{traceback.format_exc()}")
+            return Response({"error": str(e)}, status=500)
+
+
+class GetSalesReturnReportAPI(APIView):
+    def get(self, request):
+        client_id = request.query_params.get('client_id')
+
+        if not client_id:
+            return Response({"error": "Missing client_id in query parameters."}, status=400)
+
+        salesreturn_report = SalesReturnReport.objects.filter(client_id=client_id).order_by('-date', '-invno')
+        data = [{
+            "date": s.date.strftime('%Y-%m-%d') if s.date else None,
+            "invno": s.invno,
+            "net": str(s.net) if s.net else None,
+            "customername": s.customername,
+            "userid": s.userid
+        } for s in salesreturn_report]
+
+        return Response({"count": len(data), "salesreturn_report": data}, status=200)

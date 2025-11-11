@@ -217,3 +217,25 @@ class SalesMonthwise(models.Model):
         indexes = [
             models.Index(fields=['client_id', 'year', 'month_number']),
         ]
+
+
+
+
+
+class SalesReturnReport(models.Model):
+    """Sales return records from acc_invoicereturn"""
+    id = models.AutoField(primary_key=True)
+    date = models.DateField(blank=True, null=True)
+    invno = models.IntegerField(blank=True, null=True)
+    net = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    customername = models.CharField(max_length=250, blank=True, null=True)
+    userid = models.CharField(max_length=13, blank=True, null=True)
+    client_id = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'salesreturn_report'
+        managed = True
+        indexes = [
+            models.Index(fields=['client_id', 'date']),
+            models.Index(fields=['invno']),
+        ]

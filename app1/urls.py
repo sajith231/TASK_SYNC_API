@@ -12,7 +12,8 @@ from .views import (
     UploadPurchaseTodayAPI, GetPurchaseTodayAPI,
 
     UploadSalesDaywiseAPI, GetSalesDaywiseAPI,
-    UploadSalesMonthwiseAPI, GetSalesMonthwiseAPI
+    UploadSalesMonthwiseAPI, GetSalesMonthwiseAPI,
+    UploadSalesReturnReportAPI, GetSalesReturnReportAPI
     
 )
 
@@ -47,6 +48,9 @@ urlpatterns = [
     path('get-sales-daywise/', GetSalesDaywiseAPI.as_view(), name='get_sales_daywise'),
     path('upload-sales-monthwise/', UploadSalesMonthwiseAPI.as_view(), name='upload_sales_monthwise'),
     path('get-sales-monthwise/', GetSalesMonthwiseAPI.as_view(), name='get_sales_monthwise'),
+
+    path('upload-salesreturn-report/', UploadSalesReturnReportAPI.as_view(), name='upload_salesreturn_report'),
+    path('get-salesreturn-report/', GetSalesReturnReportAPI.as_view(), name='get_salesreturn_report'),
 
 ]
 # xh
