@@ -29,6 +29,7 @@ urlpatterns = [
     path("api/", include("type_wise_salestoday.urls")),
     path("api/", include("stock_report.urls")),
     
+    
 ]
 
 
