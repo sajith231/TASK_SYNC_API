@@ -6,14 +6,26 @@ from .models import AccSalesType
 
 @csrf_exempt
 def upload_acc_sales_types(request):
-    data = json.loads(request.body or "[]")
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
 
-    AccSalesType.objects.all().delete()
+    client_id = request.GET.get("client_id")
+    if not client_id:
+        return JsonResponse({"error": "client_id required"}, status=400)
+
+    try:
+        data = json.loads(request.body or "[]")
+    except Exception:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    # ✅ Delete only THIS client's data
+    AccSalesType.objects.filter(client_id=client_id).delete()
 
     objs = [
         AccSalesType(
             cd=row.get("cd"),
-            name=row.get("name")
+            name=row.get("name"),
+            client_id=client_id
         )
         for row in data
         if row.get("cd")
@@ -28,9 +40,13 @@ def upload_acc_sales_types(request):
 
 
 def get_acc_sales_types(request):
-    data = list(
-        AccSalesType.objects.values("cd", "name")
-    )
+    client_id = request.GET.get("client_id")
+
+    qs = AccSalesType.objects.all()
+    if client_id:
+        qs = qs.filter(client_id=client_id)
+
+    data = list(qs.values("cd", "name"))
 
     return JsonResponse({
         "status": "success",

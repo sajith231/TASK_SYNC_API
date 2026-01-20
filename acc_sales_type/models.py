@@ -2,8 +2,10 @@ from django.db import models
 
 
 class AccSalesType(models.Model):
-    cd = models.CharField(max_length=30, primary_key=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
+    cd = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
+    client_id = models.CharField(max_length=50)
 
     class Meta:
         db_table = "acc_sales_types"
+
