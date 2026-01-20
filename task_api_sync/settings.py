@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app1',
     'rest_framework',
+    'type_wise_salestoday',
 ]
 
 REST_FRAMEWORK = {
