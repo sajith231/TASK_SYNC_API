@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
 from .models import StockReport
 
 
@@ -8,12 +9,13 @@ from .models import StockReport
 def upload_stock_report(request):
     data = json.loads(request.body or "[]")
 
+    # Clear old data
     StockReport.objects.all().delete()
 
     objs = [
         StockReport(
-            code=row.get("code"),
-            name=row.get("name"),
+            code=row.get("product_code"),
+            name=row.get("product_name"),
             productcode=row.get("productcode"),
             barcode=row.get("barcode"),
             bmrp=row.get("bmrp"),
@@ -21,7 +23,7 @@ def upload_stock_report(request):
             quantity=row.get("quantity"),
         )
         for row in data
-        if row.get("productcode")
+        if row.get("product_code") and row.get("productcode")
     ]
 
     StockReport.objects.bulk_create(objs)
@@ -35,7 +37,13 @@ def upload_stock_report(request):
 def get_stock_report(request):
     data = list(
         StockReport.objects.values(
-            "code", "name", "productcode", "barcode", "bmrp", "salesprice", "quantity"
+            "code",
+            "name",
+            "productcode",
+            "barcode",
+            "bmrp",
+            "salesprice",
+            "quantity",
         )
     )
 

@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import upload_stock_report, get_stock_report
+from . import views
 
 urlpatterns = [
-    path("upload-stock-report/", upload_stock_report),
-    path("get-stock-report/", get_stock_report),
+    path("upload-stock-report/", views.upload_stock_report),
+    path("get-stock-report/", views.get_stock_report),
 ]
