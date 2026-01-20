@@ -19,10 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('app1.urls')),
-    path('api/', include('acc_sales_type.urls')),
-    path('api/', include('type_wise_salestoday.urls')),
+    path("admin/", admin.site.urls),
+
+    # main APIs
+    path("api/", include("app1.urls")),
+
+    # 🔥 REQUIRED (THIS WAS MISSING)
+    path("api/", include("acc_sales_type.urls")),
+    path("api/", include("type_wise_salestoday.urls")),
 ]
 
 
