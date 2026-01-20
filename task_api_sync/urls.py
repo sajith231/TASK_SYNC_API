@@ -27,6 +27,7 @@ urlpatterns = [
     # 🔥 REQUIRED (THIS WAS MISSING)
     path("api/", include("acc_sales_type.urls")),
     path("api/", include("type_wise_salestoday.urls")),
+    path("api/", include("stock_report.urls")),
 ]
 
 
