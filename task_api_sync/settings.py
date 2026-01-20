@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'app1',
     'rest_framework',
     'type_wise_salestoday',
+    "acc_sales_type",
 ]
 
 REST_FRAMEWORK = {
