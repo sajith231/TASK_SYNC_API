@@ -1,54 +1,47 @@
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import StockReport
 
-
-@csrf_exempt
+@api_view(["POST"])
 def upload_stock_report(request):
-    data = json.loads(request.body or "[]")
+    client_id = request.GET.get("client_id")
 
-    # Clear old data
-    StockReport.objects.all().delete()
+    if not client_id:
+        return Response({"error": "client_id is required"}, status=400)
+
+    data = request.data
+    if not isinstance(data, list):
+        return Response({"error": "Expected list"}, status=400)
+
+    # Clear only this client's data
+    StockReport.objects.filter(client_id=client_id).delete()
 
     objs = [
         StockReport(
-            code=row.get("product_code"),
-            name=row.get("product_name"),
-            productcode=row.get("productcode"),
-            barcode=row.get("barcode"),
-            bmrp=row.get("bmrp"),
-            salesprice=row.get("salesprice"),
-            quantity=row.get("quantity"),
+            client_id=client_id,
+            product_code=i.get("product_code"),
+            product_name=i.get("product_name"),
+            productcode=i.get("productcode"),
+            barcode=i.get("barcode"),
+            bmrp=i.get("bmrp"),
+            salesprice=i.get("salesprice"),
+            quantity=i.get("quantity"),
         )
-        for row in data
-        if row.get("product_code") and row.get("productcode")
+        for i in data
     ]
 
-    StockReport.objects.bulk_create(objs)
+    StockReport.objects.bulk_create(objs, batch_size=1000)
 
-    return JsonResponse({
+    return Response({
         "status": "success",
-        "inserted": len(objs)
+        "client_id": client_id,
+        "records": len(objs)
     })
 
 
+@api_view(["GET"])
 def get_stock_report(request):
-    data = list(
-        StockReport.objects.values(
-            "code",
-            "name",
-            "productcode",
-            "barcode",
-            "bmrp",
-            "salesprice",
-            "quantity",
-        )
-    )
+    client_id = request.GET.get("client_id")
+    qs = StockReport.objects.filter(client_id=client_id)
 
-    return JsonResponse({
-        "status": "success",
-        "count": len(data),
-        "data": data
-    })
+    return Response(list(qs.values()))
