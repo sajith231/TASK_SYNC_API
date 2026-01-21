@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'stock_report',
     'tendercash',
     "refresh_tag",
+    "pdc",
 ]
 
 REST_FRAMEWORK = {
