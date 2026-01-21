@@ -31,6 +31,7 @@ urlpatterns = [
     path("api/", include("tendercash.urls")),
     path("api/", include("refresh_tag.urls")),
     path("api/", include("pdc.urls")),
+    path("api/", include("eventlog.urls")),
 
     
 

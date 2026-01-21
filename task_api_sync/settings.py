@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'tendercash',
     "refresh_tag",
     "pdc",
+    'eventlog',
 ]
 
 REST_FRAMEWORK = {
