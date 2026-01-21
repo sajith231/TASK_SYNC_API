@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import upload_pdc
+from .views import pdc_api
 
 urlpatterns = [
-    path("upload-pdc/", upload_pdc, name="upload_pdc"),
+    path("pdc/", pdc_api, name="pdc_api"),
 ]
