@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'type_wise_salestoday',
     "acc_sales_type",
     'stock_report',
+    'tendercash',
 ]
 
 REST_FRAMEWORK = {
