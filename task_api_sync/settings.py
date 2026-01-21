@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "acc_sales_type",
     'stock_report',
     'tendercash',
+    "refresh_tag",
 ]
 
 REST_FRAMEWORK = {
