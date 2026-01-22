@@ -17,14 +17,14 @@ def upload_stock_report(request):
             return Response({"error": "Expected list"}, status=400)
 
         with transaction.atomic():
-            # Clear only this client's data
+            # Delete only this client's previous data
             StockReport.objects.filter(client_id=client_id).delete()
 
             objs = [
                 StockReport(
                     client_id=client_id,
-                    code=i.get("product_code"),     # map to DB column "code"
-                    name=i.get("product_name"),     # map to DB column "name"
+                    code=i.get("product_code"),      # SQL Anywhere field
+                    name=i.get("product_name"),      # SQL Anywhere field
                     productcode=i.get("productcode"),
                     barcode=i.get("barcode"),
                     bmrp=i.get("bmrp"),
