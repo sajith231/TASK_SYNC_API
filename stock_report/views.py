@@ -23,8 +23,8 @@ def upload_stock_report(request):
             objs = [
                 StockReport(
                     client_id=client_id,
-                    product_code=i.get("product_code"),
-                    product_name=i.get("product_name"),
+                    code=i.get("product_code"),     # map to DB column "code"
+                    name=i.get("product_name"),     # map to DB column "name"
                     productcode=i.get("productcode"),
                     barcode=i.get("barcode"),
                     bmrp=i.get("bmrp"),
@@ -43,7 +43,6 @@ def upload_stock_report(request):
         })
 
     except Exception as e:
-        # THIS WILL SHOW THE REAL PROBLEM
         return Response({
             "status": "failed",
             "error": str(e)
