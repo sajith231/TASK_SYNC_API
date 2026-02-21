@@ -46,7 +46,7 @@ class AccInvmastSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccInvmast
         fields = ['modeofpayment', 'customerid', 'invdate', 'nettotal',
-                  'paid', 'bill_ref', 'client_id']
+                  'paid', 'bill_ref', 'userid', 'type', 'client_id']
 
 
 class CashAndBankAccMasterSerializer(serializers.ModelSerializer):

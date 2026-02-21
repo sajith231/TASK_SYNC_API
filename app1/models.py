@@ -76,6 +76,9 @@ class AccInvmast(models.Model):
     nettotal = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True)
     paid = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True)
     bill_ref = models.CharField(max_length=100, blank=True, null=True)
+
+    userid = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=20, blank=True, null=True)
     client_id = models.CharField(max_length=100)
 
     class Meta:

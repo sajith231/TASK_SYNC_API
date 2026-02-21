@@ -263,6 +263,11 @@ class UploadAccInvmastAPI(APIView):
                     nettotal=item.get('nettotal'),
                     paid=item.get('paid'),
                     bill_ref=item.get('bill_ref'),
+
+                    # 🔹 NEW
+                    userid=item.get('userid'),
+                    type=item.get('type'),
+
                     client_id=client_id
                 )
 
