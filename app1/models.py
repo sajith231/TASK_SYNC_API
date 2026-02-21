@@ -70,6 +70,7 @@ class AccLedgers(models.Model):
 
 class AccInvmast(models.Model):
     id = models.AutoField(primary_key=True)
+    slno = models.BigIntegerField(blank=True, null=True)  # ✅ NEW
     modeofpayment = models.CharField(max_length=10, blank=True, null=True)
     customerid = models.CharField(max_length=30, blank=True, null=True)
     invdate = models.DateField(blank=True, null=True)

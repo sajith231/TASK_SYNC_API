@@ -270,6 +270,7 @@ class UploadAccInvmastAPI(APIView):
                         invdate = None
 
                 AccInvmast.objects.create(
+                    slno=item.get('slno'),        # ✅ NEW
                     modeofpayment=item.get('modeofpayment'),
                     customerid=item.get('customerid'),
                     invdate=invdate,
@@ -304,6 +305,7 @@ class GetAccInvmastAPI(APIView):
         acc_invmast = AccInvmast.objects.filter(client_id=client_id)
 
         data = [{
+            "slno": i.slno,              # ✅ NEW
             "modeofpayment": i.modeofpayment,
             "customerid": i.customerid,
             "invdate": i.invdate.strftime('%Y-%m-%d') if i.invdate else None,
