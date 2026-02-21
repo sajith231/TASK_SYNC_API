@@ -241,6 +241,11 @@ class GetAccLedgersAPI(APIView):
         return Response({"count": len(data), "acc_ledgers": data}, status=200)
 
 
+from datetime import datetime
+import traceback
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 class UploadAccInvmastAPI(APIView):
     def post(self, request):
         data = request.data
@@ -253,25 +258,36 @@ class UploadAccInvmastAPI(APIView):
             return Response({"error": "Expected a list of acc_invmast items."}, status=400)
 
         try:
+            # keep existing behaviour
             AccInvmast.objects.filter(client_id=client_id).delete()
 
             for item in data:
+                invdate = item.get('invdate')
+                if invdate:
+                    try:
+                        invdate = datetime.strptime(invdate, "%Y-%m-%d").date()
+                    except Exception:
+                        invdate = None
+
                 AccInvmast.objects.create(
                     modeofpayment=item.get('modeofpayment'),
                     customerid=item.get('customerid'),
-                    invdate=item.get('invdate'),
+                    invdate=invdate,
                     nettotal=item.get('nettotal'),
                     paid=item.get('paid'),
                     bill_ref=item.get('bill_ref'),
 
-                    # 🔹 NEW
+                    # 🔹 NEW (unchanged behaviour)
                     userid=item.get('userid'),
                     type=item.get('type'),
 
                     client_id=client_id
                 )
 
-            return Response({"message": f"{len(data)} acc_invmast records uploaded for client_id {client_id}."}, status=201)
+            return Response(
+                {"message": f"{len(data)} acc_invmast records uploaded for client_id {client_id}."},
+                status=201
+            )
 
         except Exception as e:
             logger.error(f"Error in UploadAccInvmastAPI: {str(e)}\n{traceback.format_exc()}")
@@ -286,16 +302,25 @@ class GetAccInvmastAPI(APIView):
             return Response({"error": "Missing client_id in query parameters."}, status=400)
 
         acc_invmast = AccInvmast.objects.filter(client_id=client_id)
+
         data = [{
             "modeofpayment": i.modeofpayment,
             "customerid": i.customerid,
             "invdate": i.invdate.strftime('%Y-%m-%d') if i.invdate else None,
             "nettotal": str(i.nettotal) if i.nettotal else None,
             "paid": str(i.paid) if i.paid else None,
-            "bill_ref": i.bill_ref
+            "bill_ref": i.bill_ref,
+
+            # 🔹 NEW (only returned, nothing else changed)
+            "userid": i.userid,
+            "type": i.type,
+
         } for i in acc_invmast]
 
-        return Response({"count": len(data), "acc_invmast": data}, status=200)
+        return Response(
+            {"count": len(data), "acc_invmast": data},
+            status=200
+        )
 
 class UploadCashAndBankAccMasterAPI(APIView):
     def post(self, request):
