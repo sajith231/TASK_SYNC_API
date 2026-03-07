@@ -126,6 +126,7 @@ class AccTtServicemaster(models.Model):
 class SalesToday(models.Model):
     """Sales records from acc_invmast where billno > 0"""
     id = models.AutoField(primary_key=True)
+    slno = models.BigIntegerField(blank=True, null=True)   # ⭐ ADDED
     nettotal = models.DecimalField(max_digits=15, decimal_places=3, blank=True, null=True)
     billno = models.IntegerField(blank=True, null=True)
     type = models.CharField(max_length=30, blank=True, null=True)

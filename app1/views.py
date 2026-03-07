@@ -505,26 +505,31 @@ class UploadSalesTodayAPI(APIView):
             # Clear existing data
             SalesToday.objects.filter(client_id=client_id).delete()
 
-            # Insert new records
+            bulk = []
+
             for item in data:
-                SalesToday.objects.create(
-                    nettotal=item.get('nettotal'),
-                    billno=item.get('billno'),
-                    type=item.get('type'),
-                    userid=item.get('userid'),
-                    invdate=item.get('invdate'),
-                    customername=item.get('customername'),
-                    client_id=client_id
+                bulk.append(
+                    SalesToday(
+                        slno=item.get('slno') or item.get('SLNO'),   # ⭐ FIX
+                        nettotal=item.get('nettotal') or item.get('NETTOTAL'),
+                        billno=item.get('billno') or item.get('BILLNO'),
+                        type=item.get('type') or item.get('TYPE'),
+                        userid=item.get('userid') or item.get('USERID'),
+                        invdate=item.get('invdate') or item.get('INVDATE'),
+                        customername=item.get('customername') or item.get('CUSTOMERNAME'),
+                        client_id=client_id
+                    )
                 )
 
+            SalesToday.objects.bulk_create(bulk)
+
             return Response({
-                "message": f"{len(data)} sales_today records uploaded for client_id {client_id}."
+                "message": f"{len(bulk)} sales_today records uploaded for client_id {client_id}."
             }, status=201)
 
         except Exception as e:
             logger.error(f"Error in UploadSalesTodayAPI: {str(e)}\n{traceback.format_exc()}")
             return Response({"error": str(e)}, status=500)
-
 
 class GetSalesTodayAPI(APIView):
     def get(self, request):
@@ -534,7 +539,9 @@ class GetSalesTodayAPI(APIView):
             return Response({"error": "Missing client_id in query parameters."}, status=400)
 
         sales_today = SalesToday.objects.filter(client_id=client_id).order_by('-invdate', '-billno')
+
         data = [{
+            "slno": s.slno,
             "nettotal": str(s.nettotal) if s.nettotal else None,
             "billno": s.billno,
             "type": s.type,
@@ -543,7 +550,10 @@ class GetSalesTodayAPI(APIView):
             "customername": s.customername
         } for s in sales_today]
 
-        return Response({"count": len(data), "sales_today": data}, status=200)
+        return Response({
+            "count": len(data),
+            "sales_today": data
+        }, status=200)
 
 
 # NEW: Purchase Today API Views
