@@ -3,14 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import connection
 from .models import TypeWiseSalesToday
-import logging, traceback
+import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
 
 class UploadTypeWiseSalesTodayAPI(APIView):
     """
-    Upload TYPE wise sales summary for TODAY
+    Upload TYPE wise sales for TODAY
     """
 
     def post(self, request):
@@ -20,18 +21,18 @@ class UploadTypeWiseSalesTodayAPI(APIView):
             return Response({"error": "client_id required"}, status=400)
 
         try:
-            # clear old data
+            # Clear previous data
             TypeWiseSalesToday.objects.filter(client_id=client_id).delete()
 
             query = """
                 SELECT 
-                    type AS TYPE,
-                    SUM(nettotal) AS NETTOTAL,
-                    COUNT(*) AS BILLCOUNT
+                    slno,
+                    type,
+                    nettotal
                 FROM acc_invmast
                 WHERE billno > 0
                 AND invdate = CURRENT DATE
-                GROUP BY type
+                ORDER BY slno
             """
 
             with connection.cursor() as cursor:
@@ -39,20 +40,27 @@ class UploadTypeWiseSalesTodayAPI(APIView):
                 rows = cursor.fetchall()
 
             bulk = []
+
             for r in rows:
-                bulk.append(TypeWiseSalesToday(
-                    type=r[0],
-                    nettotal=r[1],
-                    billcount=r[2],
-                    client_id=client_id
-                ))
+                bulk.append(
+                    TypeWiseSalesToday(
+                        slno=r[0],
+                        type=r[1],
+                        nettotal=r[2],
+                        billcount=1,
+                        client_id=client_id
+                    )
+                )
 
             TypeWiseSalesToday.objects.bulk_create(bulk)
 
-            return Response({
-                "message": "Type wise sales today synced",
-                "records": len(bulk)
-            }, status=201)
+            return Response(
+                {
+                    "message": "Type wise sales today synced",
+                    "records": len(bulk)
+                },
+                status=201
+            )
 
         except Exception as e:
             logger.error(traceback.format_exc())
@@ -72,13 +80,20 @@ class GetTypeWiseSalesTodayAPI(APIView):
 
         qs = TypeWiseSalesToday.objects.filter(client_id=client_id)
 
-        data = [{
-            "TYPE": i.type,
-            "NETTOTAL": str(i.nettotal),
-            "BILLCOUNT": i.billcount
-        } for i in qs]
+        data = []
 
-        return Response({
-            "count": len(data),
-            "data": data
-        }, status=200)
+        for i in qs:
+            data.append({
+                "SLNO": i.slno,
+                "TYPE": i.type,
+                "NETTOTAL": str(i.nettotal),
+                "BILLCOUNT": i.billcount
+            })
+
+        return Response(
+            {
+                "count": len(data),
+                "data": data
+            },
+            status=200
+        )
