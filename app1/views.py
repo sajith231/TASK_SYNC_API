@@ -673,25 +673,28 @@ class UploadSalesMonthwiseAPI(APIView):
         client_id = request.query_params.get('client_id')
 
         if not client_id:
-            return Response({"error": "Missing client_id in query parameters."}, status=400)
+            return Response(
+                {"error": "Missing client_id in query parameters."},
+                status=400
+            )
 
         if not isinstance(data, list):
-            return Response({"error": "Expected a list of sales_monthwise items."}, status=400)
+            return Response(
+                {"error": "Expected a list of sales_monthwise items."},
+                status=400
+            )
 
         try:
-            # Get current year to limit deletion scope
-            from datetime import datetime
-            current_year = datetime.now().year
-            
-            # Clear existing data for current year only
-            SalesMonthwise.objects.filter(client_id=client_id, year=current_year).delete()
+            # ✅ IMPORTANT FIX: DELETE FULL FINANCIAL YEAR DATA
+            # (Financial year spans 2 calendar years)
+            SalesMonthwise.objects.filter(client_id=client_id).delete()
 
             # Insert new records
             for item in data:
                 SalesMonthwise.objects.create(
                     month_name=item.get('month_name'),
                     month_number=item.get('month_number'),
-                    year=item.get('year', current_year),
+                    year=item.get('year'),
                     total_bills=item.get('total_bills', 0),
                     total_amount=item.get('total_amount', 0),
                     client_id=client_id
@@ -702,7 +705,9 @@ class UploadSalesMonthwiseAPI(APIView):
             }, status=201)
 
         except Exception as e:
-            logger.error(f"Error in UploadSalesMonthwiseAPI: {str(e)}\n{traceback.format_exc()}")
+            logger.error(
+                f"Error in UploadSalesMonthwiseAPI: {str(e)}\n{traceback.format_exc()}"
+            )
             return Response({"error": str(e)}, status=500)
 
 
