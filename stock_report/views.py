@@ -30,7 +30,6 @@ def upload_stock_report(request):
                     bmrp=i.get("bmrp"),
                     salesprice=i.get("salesprice"),
                     quantity=i.get("quantity"),
-                    cost=i.get("cost"),
                 )
                 for i in data
             ]
