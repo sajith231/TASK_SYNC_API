@@ -682,7 +682,7 @@ class UploadSalesMonthwiseAPI(APIView):
             return Response(
                 {"error": "Expected a list of sales_monthwise items."},
                 status=400
-            )
+            )c
 
         try:
             # ✅ IMPORTANT FIX: DELETE FULL FINANCIAL YEAR DATA
