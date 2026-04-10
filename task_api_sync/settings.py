@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "refresh_tag",
     "pdc",
     'eventlog',
+    "stock_summary",
 ]
 
 REST_FRAMEWORK = {

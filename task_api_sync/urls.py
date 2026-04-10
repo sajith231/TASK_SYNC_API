@@ -32,6 +32,7 @@ urlpatterns = [
     path("api/", include("refresh_tag.urls")),
     path("api/", include("pdc.urls")),
     path("api/", include("eventlog.urls")),
+    path("api/", include("stock_summary.urls")),
 
     
 
