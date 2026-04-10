@@ -1,13 +1,13 @@
 from django.urls import path
 from .views import (
-    UploadAccUsersAPI, GetAccUsersAPI,
+    GetSalesReturnDaywiseAPI, GetSalesReturnMonthwiseAPI, UploadAccUsersAPI, GetAccUsersAPI,
     UploadMiselAPI, GetMiselAPI,
     UploadAccMasterAPI, GetAccMasterAPI,
     UploadAccLedgersAPI, GetAccLedgersAPI,
     UploadAccInvmastAPI, GetAccInvmastAPI,
     UploadCashAndBankAccMasterAPI, GetCashAndBankAccMasterAPI,
     # NEW imports
-    UploadAccTtServicemasterAPI, GetAccTtServicemasterAPI,
+    UploadAccTtServicemasterAPI, GetAccTtServicemasterAPI, UploadSalesReturnDaywiseAPI, UploadSalesReturnMonthwiseAPI,
     UploadSalesTodayAPI, GetSalesTodayAPI,
     UploadPurchaseTodayAPI, GetPurchaseTodayAPI,
 
@@ -57,6 +57,11 @@ urlpatterns = [
     path('get-purchase-daywise/', GetPurchaseDaywiseAPI.as_view(), name='get_purchase_daywise'),
     path('upload-purchase-monthwise/', UploadPurchaseMonthwiseAPI.as_view(), name='upload_purchase_monthwise'),
     path('get-purchase-monthwise/', GetPurchaseMonthwiseAPI.as_view(), name='get_purchase_monthwise'),
+
+    path('upload-salesreturn-daywise/',   UploadSalesReturnDaywiseAPI.as_view(),   name='upload_salesreturn_daywise'),
+    path('get-salesreturn-daywise/',      GetSalesReturnDaywiseAPI.as_view(),      name='get_salesreturn_daywise'),
+    path('upload-salesreturn-monthwise/', UploadSalesReturnMonthwiseAPI.as_view(), name='upload_salesreturn_monthwise'),
+    path('get-salesreturn-monthwise/',    GetSalesReturnMonthwiseAPI.as_view(),    name='get_salesreturn_monthwise'),
 
 ]
 # xha
