@@ -21,7 +21,7 @@ class StockSummary(models.Model):
     )
     # True  → batch mode  (barcodelength > 0)
     # False → product mode (barcodelength == 0)
-    barcode_mode = models.BooleanField(default=False)
+    barcode_mode = models.CharField(max_length=10)
 
     client_id = models.CharField(max_length=100)
 

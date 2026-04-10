@@ -61,7 +61,7 @@ class UploadStockSummaryAPI(APIView):
             StockSummary.objects.create(
                 total_products    = int(data.get("total_products", 0)),
                 total_stock_value = data.get("total_stock_value", 0),
-                barcode_mode      = bool(data.get("barcode_mode", False)),
+                barcode_mode      = data.get("barcode_mode", "BGR"),   # ← string now
                 client_id         = client_id,
             )
 
