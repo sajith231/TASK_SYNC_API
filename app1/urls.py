@@ -13,7 +13,9 @@ from .views import (
 
     UploadSalesDaywiseAPI, GetSalesDaywiseAPI,
     UploadSalesMonthwiseAPI, GetSalesMonthwiseAPI,
-    UploadSalesReturnReportAPI, GetSalesReturnReportAPI
+    UploadSalesReturnReportAPI, GetSalesReturnReportAPI,
+    UploadPurchaseDaywiseAPI, GetPurchaseDaywiseAPI,
+    UploadPurchaseMonthwiseAPI, GetPurchaseMonthwiseAPI,
     
 )
 
@@ -51,6 +53,10 @@ urlpatterns = [
 
     path('upload-salesreturn-report/', UploadSalesReturnReportAPI.as_view(), name='upload_salesreturn_report'),
     path('get-salesreturn-report/', GetSalesReturnReportAPI.as_view(), name='get_salesreturn_report'),
+    path('upload-purchase-daywise/', UploadPurchaseDaywiseAPI.as_view(), name='upload_purchase_daywise'),
+    path('get-purchase-daywise/', GetPurchaseDaywiseAPI.as_view(), name='get_purchase_daywise'),
+    path('upload-purchase-monthwise/', UploadPurchaseMonthwiseAPI.as_view(), name='upload_purchase_monthwise'),
+    path('get-purchase-monthwise/', GetPurchaseMonthwiseAPI.as_view(), name='get_purchase_monthwise'),
 
 ]
 # xha

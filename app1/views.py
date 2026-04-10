@@ -786,3 +786,76 @@ class GetSalesReturnReportAPI(APIView):
         } for s in salesreturn_report]
 
         return Response({"count": len(data), "salesreturn_report": data}, status=200)
+    
+
+
+from .models import PurchaseDaywise, PurchaseMonthwise
+
+class UploadPurchaseDaywiseAPI(APIView):
+    def post(self, request):
+        client_id = request.query_params.get('client_id')
+        if not client_id:
+            return Response({'error': 'client_id required'}, status=400)
+        data = request.data
+        if not isinstance(data, list):
+            return Response({'error': 'Expected a list'}, status=400)
+        PurchaseDaywise.objects.filter(client_id=client_id).delete()
+        created = 0
+        for row in data:
+            try:
+                PurchaseDaywise.objects.create(
+                    date=row['date'],
+                    total_bills=row.get('total_bills', 0),
+                    total_amount=row.get('total_amount', 0),
+                    client_id=client_id,
+                )
+                created += 1
+            except Exception:
+                continue
+        return Response({'created': created}, status=201)
+
+
+class GetPurchaseDaywiseAPI(APIView):
+    def get(self, request):
+        client_id = request.query_params.get('client_id')
+        if not client_id:
+            return Response({'error': 'client_id required'}, status=400)
+        qs = PurchaseDaywise.objects.filter(client_id=client_id).order_by('-date')
+        data = list(qs.values('date', 'total_bills', 'total_amount', 'client_id'))
+        return Response(data)
+
+
+class UploadPurchaseMonthwiseAPI(APIView):
+    def post(self, request):
+        client_id = request.query_params.get('client_id')
+        if not client_id:
+            return Response({'error': 'client_id required'}, status=400)
+        data = request.data
+        if not isinstance(data, list):
+            return Response({'error': 'Expected a list'}, status=400)
+        PurchaseMonthwise.objects.filter(client_id=client_id).delete()
+        created = 0
+        for row in data:
+            try:
+                PurchaseMonthwise.objects.create(
+                    month_name=row['month_name'],
+                    month_number=row['month_number'],
+                    year=row['year'],
+                    total_bills=row.get('total_bills', 0),
+                    total_amount=row.get('total_amount', 0),
+                    client_id=client_id,
+                )
+                created += 1
+            except Exception:
+                continue
+        return Response({'created': created}, status=201)
+
+
+class GetPurchaseMonthwiseAPI(APIView):
+    def get(self, request):
+        client_id = request.query_params.get('client_id')
+        if not client_id:
+            return Response({'error': 'client_id required'}, status=400)
+        qs = PurchaseMonthwise.objects.filter(client_id=client_id).order_by('year', 'month_number')
+        data = list(qs.values('month_name', 'month_number', 'year', 'total_bills', 'total_amount', 'client_id'))
+        return Response(data)
